@@ -1,99 +1,79 @@
-# Terraform Networking Module (Module 17)
+# Terraform Azure Storage Account - Module 18
 
-This project demonstrates how to build a reusable Azure networking module using Terraform.
+This project deploys an Azure Storage Account and a private Blob Container using Terraform with secure, production-oriented defaults.
 
-## Resources Created
+## Resources Deployed
 
-- Resource Group
-- Virtual Network
-- Three Subnets
-  - session_hosts
-  - management
-  - private_endpoints
-- Network Security Group (NSG)
-- Dynamic NSG Security Rules
-- Subnet-to-NSG Associations
+- Azure Resource Group
+- Azure Storage Account (StorageV2)
+- Azure Blob Container (Private Access)
 
-## Concepts Covered
+## Security Configuration
 
-- Terraform Modules
-- for_each
-- Dynamic Blocks
-- map(object(...))
-- Module Inputs and Outputs
-- Azure Networking Fundamentals
-- Resource Associations
-- Implicit Dependencies
-- Reusable Infrastructure Design
+- HTTPS traffic only enabled
+- TLS 1.2 enforced
+- Public network access disabled
+- Blob public access disabled
+- Shared access keys disabled
+- Private blob container access
+- Resource tagging enabled
 
-## Subnet Configuration
+## Features
 
-```hcl
-subnets = {
-  session_hosts = {
-    address_prefix = "10.0.1.0/24"
-  }
+- Production-style naming conventions
+- Configurable replication type and account tier
+- Secure by default configuration
+- Terraform outputs for resource consumption in future modules
 
-  management = {
-    address_prefix = "10.0.2.0/24"
-  }
+## Project Structure
 
-  private_endpoints = {
-    address_prefix = "10.0.3.0/24"
-  }
-}
+```
+terraform-storage-account-18
+│
+├── main.tf
+├── variables.tf
+├── terraform.tfvars
+├── outputs.tf
+├── providers.tf
+├── README.md
+└── .gitignore
 ```
 
-## Security Rules
+## Variables
 
-Security rules are defined as a map of objects and created dynamically using a Terraform dynamic block.
-
-Example:
-
-```hcl
-security_rules = {
-  HTTPS = {
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "443"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-```
+| Variable | Description |
+|---------|---------|
+| resource_group_name | Resource Group name |
+| location | Azure region |
+| storage_account_name | Storage Account name |
+| account_tier | Storage account tier |
+| account_replication_type | Replication type |
+| account_kind | Storage account kind |
+| public_network_access_enabled | Enable or disable public access |
+| allow_nested_items_to_be_public | Allow blob public access |
+| shared_access_key_enabled | Enable or disable shared access keys |
+| min_tls_version | Minimum TLS version |
+| container_name | Blob container name |
+| tags | Resource tags |
 
 ## Outputs
 
-The module exposes subnet IDs as a map:
+- storage_account_name
+- storage_account_id
+- primary_blob_endpoint
+- blob_container_name
+- blob_container_id
 
-```hcl
-output "subnet_ids"
+## Deployment
+
+```bash
+terraform init
+terraform fmt
+terraform validate
+terraform plan
+terraform apply
 ```
 
-Example usage:
+## Notes
 
-```hcl
-module.networking.subnet_ids["session_hosts"]
-```
-
-## Architecture
-
-```
-Resource Group
-│
-├── Virtual Network
-│
-├── Subnets
-│   ├── session_hosts
-│   ├── management
-│   └── private_endpoints
-│
-├── Network Security Group
-│
-└── Subnet NSG Associations
-```
-
-This module is designed to be reused in future Azure infrastructure deployments.
+This project is part of a Terraform and Azure Infrastructure learning path focused on building production-style Azure environments using Infrastructure as Code.
