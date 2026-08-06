@@ -8,6 +8,9 @@ This project deploys an Azure Storage Account and a private Blob Container using
 - Azure Storage Account (StorageV2)
 - Azure Blob Container (Private Access)
 
+added 8/6/26
+
+
 ## Security Configuration
 
 - HTTPS traffic only enabled
@@ -77,3 +80,14 @@ terraform apply
 ## Notes
 
 This project is part of a Terraform and Azure Infrastructure learning path focused on building production-style Azure environments using Infrastructure as Code.
+
+added 8/6/26
+## Azure Files Authentication
+
+The storage account is configured for Microsoft Entra Kerberos authentication.
+
+```hcl
+azure_files_authentication {
+  directory_type                 = "AADKERB"
+  default_share_level_permission = "None"
+}
