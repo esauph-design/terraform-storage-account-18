@@ -1,14 +1,4 @@
-# module "networking" {
-#   source                      = "./modules/networking"
-#   resource_group_name         = var.resource_group_name
-#   location                    = var.location
-#   tags                        = var.tags
-#   virtual_network_name        = var.virtual_network_name
-#   address_space               = var.address_space
-#   network_security_group_name = var.network_security_group_name
-#   subnets                     = var.subnets
-#   security_rules              = var.security_rules
-# }
+
 resource "azurerm_resource_group" "resource_group" {
   name     = var.resource_group_name
   location = var.location
@@ -27,6 +17,13 @@ resource "azurerm_storage_account" "storage_account" {
   min_tls_version                 = var.min_tls_version
   https_traffic_only_enabled      = var.https_traffic_only_enabled
   tags                            = var.tags
+
+  #Added when Module 24 was created. Kerberos is added so FSLogix can be accessed
+
+  azure_files_authentication {
+    directory_type                 = "AADKERB"
+    default_share_level_permission = "None"
+  }
 }
 resource "azurerm_storage_container" "blob_container" {
   name                  = var.container_name
